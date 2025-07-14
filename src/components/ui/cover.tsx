@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useId, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { useRef } from "react";
+import React, { useEffect, useId, useState, useRef } from "react";
+// ✅ CORRECCIÓN: Se importa desde 'framer-motion' en lugar de 'motion/react'.
+import { AnimatePresence, motion } from "framer-motion";
 import { SparklesCore } from "./sparkles";
 import { cn } from "@/lib/utils";
 
@@ -20,19 +20,21 @@ export const Cover = ({
   const [containerWidth, setContainerWidth] = useState(0);
   const [beamPositions, setBeamPositions] = useState<number[]>([]);
 
+  // ✅ CORRECCIÓN: Se elimina 'ref.current' del array de dependencias.
+  // El efecto ahora se ejecuta solo una vez después del montaje del componente.
   useEffect(() => {
     if (ref.current) {
       setContainerWidth(ref.current?.clientWidth ?? 0);
 
       const height = ref.current?.clientHeight ?? 0;
-      const numberOfBeams = Math.floor(height / 10); // Adjust the divisor to control the spacing
+      const numberOfBeams = Math.floor(height / 10);
       const positions = Array.from(
         { length: numberOfBeams },
         (_, i) => (i + 1) * (height / (numberOfBeams + 1))
       );
       setBeamPositions(positions);
     }
-  }, [ref.current]);
+  }, []);
 
   return (
     <div
@@ -139,9 +141,9 @@ export const Cover = ({
         {children}
       </motion.span>
       <CircleIcon className="absolute -right-[2px] -top-[2px]" />
-      <CircleIcon className="absolute -bottom-[2px] -right-[2px]" delay={0.4} />
-      <CircleIcon className="absolute -left-[2px] -top-[2px]" delay={0.8} />
-      <CircleIcon className="absolute -bottom-[2px] -left-[2px]" delay={1.6} />
+      <CircleIcon className="absolute -bottom-[2px] -right-[2px]" />
+      <CircleIcon className="absolute -left-[2px] -top-[2px]" />
+      <CircleIcon className="absolute -bottom-[2px] -left-[2px]" />
     </div>
   );
 };
@@ -211,12 +213,11 @@ export const Beam = ({
   );
 };
 
+// ✅ CORRECCIÓN: Se elimina el prop 'delay' que no se utilizaba.
 export const CircleIcon = ({
   className,
-  delay,
 }: {
   className?: string;
-  delay?: number;
 }) => {
   return (
     <div

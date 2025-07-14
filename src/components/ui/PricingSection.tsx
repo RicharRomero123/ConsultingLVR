@@ -140,7 +140,7 @@ const PricingTableSection = () => {
 
           {/* Feature Rows */}
           <div className="bg-gray-800/60">
-            {featuresData.map((feature, index) => (
+            {featuresData.map((feature) => (
               <div key={feature.name} className="grid grid-cols-4 gap-x-4 items-center border-t border-gray-700/70">
                 <div className="p-4 text-left flex items-center">
                   <span className="font-semibold text-gray-300">{feature.name}</span>

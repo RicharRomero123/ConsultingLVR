@@ -1,4 +1,3 @@
-// src/app/page.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -7,15 +6,25 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     CheckCircle, ArrowRight, X,
-    Building, FileText, ShoppingCart, Scale, Dumbbell, Users, Target, GitBranch, Star, Rocket
+    Building, FileText, ShoppingCart, Scale, Dumbbell, Users, Target, GitBranch, Star, Rocket, LucideIcon
 } from 'lucide-react';
 import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 import PricingTableSection from '@/components/ui/PricingSection';
 import HeroSectionWithLottie from '@/components/ui/HeroSectionWithLottie';
 import Navbar from '@/components/Navbar';
 
+// ✅ CORRECCIÓN: Se define un tipo para las especialidades para evitar 'any'.
+type SpecialtyType = {
+    icon: LucideIcon;
+    title: string;
+    description: string;
+    fullDescription: string;
+    features: string[];
+};
+
 // --- Componente de Modal Interactivo ---
-const SpecialtyModal = ({ specialty, onClose }: { specialty: any; onClose: () => void; }) => {
+// ✅ CORRECCIÓN: Se usa el tipo 'SpecialtyType' en lugar de 'any'.
+const SpecialtyModal = ({ specialty, onClose }: { specialty: SpecialtyType; onClose: () => void; }) => {
     if (!specialty) return null;
 
     return (
@@ -38,7 +47,6 @@ const SpecialtyModal = ({ specialty, onClose }: { specialty: any; onClose: () =>
                         <X size={24} />
                     </button>
                     <div className="flex items-center gap-4 mb-4">
-                        {/* CAMBIO: Se usa el color verde esmeralda. */}
                         <specialty.icon className="w-10 h-10 text-emerald-500" />
                         <h2 className="text-2xl font-bold text-white">{specialty.title}</h2>
                     </div>
@@ -47,7 +55,6 @@ const SpecialtyModal = ({ specialty, onClose }: { specialty: any; onClose: () =>
                     <ul className="space-y-2">
                         {specialty.features.map((feature: string, index: number) => (
                             <li key={index} className="flex items-center gap-3">
-                                {/* CAMBIO: Se usa el color verde esmeralda. */}
                                 <CheckCircle className="w-5 h-5 text-emerald-500" />
                                 <span className="text-gray-300">{feature}</span>
                             </li>
@@ -95,7 +102,6 @@ ${formData.description}
             transition={{ duration: 0.5 }}
             viewport={{ once: true, amount: 0.2 }}
             onSubmit={handleSubmit}
-            // CAMBIO: Se ajustan los estilos del formulario.
             className="bg-gray-800 border border-white/10 p-8 rounded-2xl max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6"
         >
             <div className="sm:col-span-2">
@@ -104,7 +110,6 @@ ${formData.description}
             </div>
             <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Nombre Completo</label>
-                {/* CAMBIO: Se ajusta el color de foco de los inputs. */}
                 <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"/>
             </div>
             <div>
@@ -130,7 +135,6 @@ ${formData.description}
                 <textarea id="description" name="description" value={formData.description} onChange={handleChange} rows={4} required placeholder="Ej: Necesito un sistema para gestionar inventario y ventas de mi tienda..." className="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"></textarea>
             </div>
             <div className="sm:col-span-2">
-                {/* CAMBIO: Se ajusta el color del botón de envío. */}
                 <button type="submit" className="w-full bg-emerald-600 text-white font-semibold py-3 rounded-lg hover:bg-emerald-700 transition-all hover:scale-105 shadow-md shadow-emerald-500/20">
                     Enviar y Contactar por WhatsApp
                 </button>
@@ -141,9 +145,11 @@ ${formData.description}
 
 // --- Página Principal (Landing Page) ---
 const HomePage: React.FC = () => {
-    const [modalData, setModalData] = useState(null);
+    // ✅ CORRECCIÓN: Se usa el tipo 'SpecialtyType' en el estado del modal.
+    const [modalData, setModalData] = useState<SpecialtyType | null>(null);
     
-    const specialties = [
+    // ✅ CORRECCIÓN: Se asigna el tipo 'SpecialtyType[]' al array.
+    const specialties: SpecialtyType[] = [
         { 
             icon: FileText, 
             title: 'Gestión de Recibos y Facturación',
@@ -194,7 +200,8 @@ const HomePage: React.FC = () => {
         { img: 'https://res.cloudinary.com/dod56svuf/image/upload/v1752473579/WhatsApp_Image_2025-07-14_at_1.12.46_AM_coojoy.jpg', title: 'Dashboard de Inteligencia Empresarial', desc: 'Visualización de datos críticos con un enfoque ejecutivo.', rating: '4.8', reviews: '4.5k' },
     ];
 
-    const handleOpenModal = (specialty: any) => {
+    // ✅ CORRECCIÓN: Se usa el tipo 'SpecialtyType' en el parámetro de la función.
+    const handleOpenModal = (specialty: SpecialtyType) => {
         setModalData(specialty);
     };
 
@@ -203,7 +210,6 @@ const HomePage: React.FC = () => {
     };
 
     return (
-        // CAMBIO: Se usa un fondo más oscuro para la base de la página.
         <div className="bg-black text-white">
             <Navbar />
             {modalData && <SpecialtyModal specialty={modalData} onClose={handleCloseModal} />}
@@ -212,7 +218,6 @@ const HomePage: React.FC = () => {
                 <HeroSectionWithLottie/>
                 
                 {/* Quienes Somos Section */}
-                {/* CAMBIO: Fondo ligeramente más claro para alternar secciones. */}
                 <section id="quienes-somos" className="py-20 md:py-28 px-4 bg-gray-900">
                     <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                         <motion.div
@@ -221,7 +226,6 @@ const HomePage: React.FC = () => {
                             transition={{ duration: 0.6 }}
                             viewport={{ once: true, amount: 0.5 }}
                         >
-                            {/* CAMBIO: Se usa el color verde esmeralda para el acento. */}
                             <h2 className="text-3xl md:text-4xl font-bold text-white">Sobre <span className="text-emerald-500">SistemasVIP</span></h2>
                             <p className="mt-4 text-lg text-gray-300">Somos más que una empresa de desarrollo; somos tus socios estratégicos en tecnología. Nuestra misión es potenciar negocios como el tuyo a través de software innovador, robusto y, sobre todo, hecho a la medida de tus necesidades.</p>
                             <p className="mt-4 text-gray-400">Creemos que la tecnología debe ser una herramienta que simplifique operaciones, no que las complique. Por eso, nos enfocamos en entender a fondo tus procesos para construir la solución perfecta.</p>
@@ -233,7 +237,6 @@ const HomePage: React.FC = () => {
                             viewport={{ once: true, amount: 0.5 }}
                             className="grid grid-cols-2 gap-6 text-center"
                         >
-                            {/* CAMBIO: Se ajustan los colores y estilos de las tarjetas. */}
                             <div className="bg-gray-800 border border-white/10 p-6 rounded-xl"><Users className="mx-auto w-10 h-10 text-emerald-500 mb-2" /><h3 className="font-bold text-white">Equipo Experto</h3></div>
                             <div className="bg-gray-800 border border-white/10 p-6 rounded-xl"><Target className="mx-auto w-10 h-10 text-emerald-500 mb-2" /><h3 className="font-bold text-white">Enfoque al Cliente</h3></div>
                             <div className="bg-gray-800 border border-white/10 p-6 rounded-xl"><GitBranch className="mx-auto w-10 h-10 text-emerald-500 mb-2" /><h3 className="font-bold text-white">Innovación Constante</h3></div>
@@ -243,7 +246,6 @@ const HomePage: React.FC = () => {
                 </section>
 
                 {/* ContainerScroll Section */}
-                {/* CAMBIO: Fondo base negro para esta sección. */}
                 <div className="flex flex-col overflow-hidden bg-black">
                     <ContainerScroll
                         titleComponent={
@@ -269,7 +271,6 @@ const HomePage: React.FC = () => {
                 </div>
 
                 {/* Especialidades Section */}
-                {/* CAMBIO: Fondo gris oscuro para alternar. */}
                 <section id="especialidades" className="py-20 md:py-28 px-4 bg-gray-900">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold text-white">Nuestras Especialidades</h2>
@@ -284,7 +285,6 @@ const HomePage: React.FC = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.5, delay: i * 0.1 }}
                                     viewport={{ once: true, amount: 0.5 }}
-                                    // CAMBIO: Se ajustan los estilos de las tarjetas de especialidades.
                                     className="bg-gray-800 p-6 rounded-2xl text-left flex flex-col items-start border border-white/10 hover:border-emerald-500/50 hover:-translate-y-2 transition-all"
                                 >
                                     <spec.icon className="w-10 h-10 text-emerald-500 mb-4" />
@@ -300,7 +300,6 @@ const HomePage: React.FC = () => {
                 </section>
 
                 {/* Portfolio Section */}
-                {/* CAMBIO: Fondo base negro para alternar. */}
                 <section id="portafolio" className="py-20 md:py-28 px-4 bg-black">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold text-white">Proyectos Destacados</h2>
@@ -320,7 +319,6 @@ const HomePage: React.FC = () => {
                                     <Image src={item.img} alt={item.title} width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent"></div>
                                     <div className="absolute bottom-0 left-0 p-6 w-full">
-                                        {/* CAMBIO: Se ajustan los colores del portafolio. */}
                                         <h3 className="text-xl font-semibold text-emerald-500">{item.title}</h3>
                                         <p className="text-gray-300 text-sm mt-1">{item.desc}</p>
                                         <div className="flex items-center justify-between mt-4 text-xs">
@@ -361,12 +359,10 @@ const HomePage: React.FC = () => {
                          <div className="mb-4 md:mb-0">
                              <Link href="/" className="flex items-center justify-center md:justify-start gap-2">
                                  <Image src="https://res.cloudinary.com/dod56svuf/image/upload/v1751876631/softwareVip.png" alt="SistemasVIP Logo" width={30} height={30} className="rounded-md"/>
-                                 {/* CAMBIO: Se ajusta el color del logo en el footer. */}
                                  <span className="font-semibold">Sistemas<span className="text-emerald-500">VIP</span> &copy; {new Date().getFullYear()}</span>
                              </Link>
                          </div>
                         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-                            {/* CAMBIO: Se ajusta el color de hover en los links del footer. */}
                             <Link href="#quienes-somos" className="hover:text-emerald-500 transition-colors">Quiénes Somos</Link>
                             <Link href="#especialidades" className="hover:text-emerald-500 transition-colors">Especialidades</Link>
                             <Link href="#portafolio" className="hover:text-emerald-500 transition-colors">Portafolio</Link>

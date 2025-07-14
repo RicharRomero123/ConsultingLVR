@@ -3,11 +3,11 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Service, ProgrammingLanguage, FrameworkProgramacion } from '@/types'; // Assuming types are in this file
+import { Service } from '@/types'; // Assuming types are in this file
 import serviceService from '@/services/serviceService';
 import orderService from '@/services/orderService';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Clock, AlertTriangle, X, Coins, Search, Menu, Code, Briefcase, ExternalLink, Cpu } from 'lucide-react';
+import { ShoppingCart, Clock, AlertTriangle, X, Coins, Search, Menu, Briefcase, ExternalLink, Cpu } from 'lucide-react';
 import Image from 'next/image';
 
 // --- INTERFAZ PARA ERRORES DE API ---

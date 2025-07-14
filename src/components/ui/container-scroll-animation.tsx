@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef } from "react";
-import { useScroll, useTransform, motion, MotionValue } from "motion/react";
+// Corregido: 'motion/react' no es un paquete válido, se debe usar 'framer-motion'.
+import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 
 export const ContainerScroll = ({
   titleComponent,
@@ -54,7 +55,14 @@ export const ContainerScroll = ({
   );
 };
 
-export const Header = ({ translate, titleComponent }: any) => {
+// ✅ CORRECCIÓN: Se define una interfaz para las props del Header.
+interface HeaderProps {
+  translate: MotionValue<number>;
+  titleComponent: string | React.ReactNode;
+}
+
+// ✅ CORRECCIÓN: Se usa la nueva interfaz 'HeaderProps' en lugar de 'any'.
+export const Header = ({ translate, titleComponent }: HeaderProps) => {
   return (
     <motion.div
       style={{
