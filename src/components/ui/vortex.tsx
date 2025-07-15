@@ -1,12 +1,10 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { createNoise3D } from "simplex-noise";
-// ✅ CORRECCIÓN: Se importa desde 'framer-motion' en lugar de 'motion/react'.
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface VortexProps {
-  // ✅ CORRECCIÓN: Se usa React.ReactNode en lugar de 'any'.
   children?: React.ReactNode;
   className?: string;
   containerClassName?: string;
@@ -22,8 +20,9 @@ interface VortexProps {
 
 export const Vortex = (props: VortexProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number | null>(null);
+
   const particleCount = props.particleCount || 700;
   const particlePropCount = 9;
   const particlePropsLength = particleCount * particlePropCount;
@@ -41,12 +40,14 @@ export const Vortex = (props: VortexProps) => {
   const yOff = 0.00125;
   const zOff = 0.0005;
   const backgroundColor = props.backgroundColor || "#000000";
+
   let tick = 0;
   const noise3D = createNoise3D();
   let particleProps = new Float32Array(particlePropsLength);
-  let center: [number, number] = [0, 0];
+  const center: [number, number] = [0, 0];
 
-  const TAU: number = 2 * Math.PI;
+  const TAU = 2 * Math.PI;
+
   const rand = (n: number): number => n * Math.random();
   const randRange = (n: number): number => n - rand(2 * n);
   const fadeInOut = (t: number, m: number): number => {
@@ -61,7 +62,6 @@ export const Vortex = (props: VortexProps) => {
     const container = containerRef.current;
     if (canvas && container) {
       const ctx = canvas.getContext("2d");
-
       if (ctx) {
         resize(canvas);
         initParticles();
@@ -73,7 +73,6 @@ export const Vortex = (props: VortexProps) => {
   const initParticles = () => {
     tick = 0;
     particleProps = new Float32Array(particlePropsLength);
-
     for (let i = 0; i < particlePropsLength; i += particlePropCount) {
       initParticle(i);
     }
@@ -83,7 +82,6 @@ export const Vortex = (props: VortexProps) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // ✅ CORRECCIÓN: Se usa 'const' para variables que no se reasignan.
     const x = rand(canvas.width);
     const y = center[1] + randRange(rangeY);
     const vx = 0;
@@ -99,9 +97,7 @@ export const Vortex = (props: VortexProps) => {
 
   const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
     tick++;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -124,7 +120,6 @@ export const Vortex = (props: VortexProps) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // ✅ CORRECCIÓN: Se usa 'const' para variables que no se reasignan.
     const i2 = 1 + i,
       i3 = 2 + i,
       i4 = 3 + i,
@@ -139,7 +134,7 @@ export const Vortex = (props: VortexProps) => {
     const n = noise3D(x * xOff, y * yOff, tick * zOff) * noiseSteps * TAU;
     const vx = lerp(particleProps[i3], Math.cos(n), 0.5);
     const vy = lerp(particleProps[i4], Math.sin(n), 0.5);
-    let life = particleProps[i5]; // 'life' debe ser 'let' porque se incrementa.
+    let life = particleProps[i5];
     const ttl = particleProps[i6];
     const speed = particleProps[i7];
     const x2 = x + vx * speed;
@@ -157,7 +152,6 @@ export const Vortex = (props: VortexProps) => {
     particleProps[i4] = vy;
     particleProps[i5] = life;
 
-    // ✅ CORRECCIÓN: Se usa una declaración 'if' en lugar de un cortocircuito '&&'.
     if (checkBounds(x2, y2, canvas) || life > ttl) {
       initParticle(i);
     }
@@ -190,13 +184,10 @@ export const Vortex = (props: VortexProps) => {
     return x > canvas.width || x < 0 || y > canvas.height || y < 0;
   };
 
-  // ✅ CORRECCIÓN: Se elimina el parámetro 'ctx' no utilizado.
   const resize = (canvas: HTMLCanvasElement) => {
     const { innerWidth, innerHeight } = window;
-
     canvas.width = innerWidth;
     canvas.height = innerHeight;
-
     center[0] = 0.5 * canvas.width;
     center[1] = 0.5 * canvas.height;
   };
@@ -231,7 +222,6 @@ export const Vortex = (props: VortexProps) => {
   const handleResize = () => {
     const canvas = canvasRef.current;
     if (canvas) {
-      // ✅ CORRECCIÓN: Se llama a 'resize' sin el parámetro 'ctx'.
       resize(canvas);
     }
   };
@@ -239,7 +229,6 @@ export const Vortex = (props: VortexProps) => {
   useEffect(() => {
     setup();
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
       if (animationFrameId.current) {
